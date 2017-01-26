@@ -10,7 +10,7 @@
 				<String>CSE1</String>
 			</Property>
 			<Property Name="Version">
-				<String>1.0.0.45</String>
+				<String>1.0.0.46</String>
 			</Property>
 			<Property Name="Creator">
 				<String />
@@ -966,111 +966,6 @@
 							</DefaultValue>
 						</Channel>
 					</Section>
-					<Section Name="Oqus" TypeGUID="35f2e757-0c29-4d89-97e9-6f9421cf693d">
-						<Description />
-						<Properties>
-							<Property Name="CD Status">
-								<U32>1</U32>
-							</Property>
-							<Property Name="Driver VI Exec Mode">
-								<U32>1</U32>
-							</Property>
-							<Property Name="Driver VI Path_0">
-								<DependentFile Type="To Common Doc Dir" Path="Custom Devices\Oqus\Oqus Engine - VxWorks.llb\Oqus RT Driver VI.vi">
-									<Version>1.0</Version>
-									<ForceDownload>false</ForceDownload>
-									<RTDestination>c:\ni-rt\NIVeriStand\Custom Devices\Oqus\Oqus Engine - VxWorks.llb\Oqus RT Driver VI.vi</RTDestination>
-									<SupportedTarget>VxWorks</SupportedTarget>
-									<MD5 />
-								</DependentFile>
-							</Property>
-							<Property Name="Driver VI Path_1">
-								<DependentFile Type="To Common Doc Dir" Path="Custom Devices\Oqus\Oqus Engine.llb\Oqus RT Driver VI.vi">
-									<Version>1.0</Version>
-									<ForceDownload>false</ForceDownload>
-									<RTDestination>c:\ni-rt\NIVeriStand\Custom Devices\Oqus\Oqus Engine.llb\Oqus RT Driver VI.vi</RTDestination>
-									<SupportedTarget>PharLap &amp; Windows</SupportedTarget>
-									<MD5 />
-								</DependentFile>
-							</Property>
-							<Property Name="Version">
-								<String>1.0</String>
-							</Property>
-						</Properties>
-						<Errors />
-						<Channel Name="Framecnt" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Error" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="X" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Y" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Z" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Roll" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Pictch" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Yaw" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-						<Channel Name="Residual" TypeGUID="03D3BB99-1485-13A6-561D1F898F032919" RowDim="1" ColDim="1" Units="" BitFields="1">
-							<Description />
-							<Properties />
-							<Errors />
-							<DefaultValue>
-								<Elem>0</Elem>
-							</DefaultValue>
-						</Channel>
-					</Section>
 				</Section>
 				<Section Name="Simulation Models" TypeGUID="03D3B937-1485-13A6-5600F2871E269F9A">
 					<Description />
@@ -1090,7 +985,7 @@
 									<I32>125060</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608747.3747215</Double>
+									<Double>3568278548.6072469</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -1205,9 +1100,6 @@
 										<Property Name="Index">
 											<I32>0</I32>
 										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/Oqus/X" />
-										</Property>
 									</Properties>
 									<Errors />
 									<DefaultValue>
@@ -1222,9 +1114,6 @@
 										</Property>
 										<Property Name="Index">
 											<I32>1</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/Oqus/Y" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -1241,9 +1130,6 @@
 										<Property Name="Index">
 											<I32>2</I32>
 										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/Oqus/Pictch" />
-										</Property>
 									</Properties>
 									<Errors />
 									<DefaultValue>
@@ -1258,9 +1144,6 @@
 										</Property>
 										<Property Name="Index">
 											<I32>3</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/Oqus/Z" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -1277,9 +1160,6 @@
 										<Property Name="Index">
 											<I32>4</I32>
 										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/Oqus/Roll" />
-										</Property>
 									</Properties>
 									<Errors />
 									<DefaultValue>
@@ -1294,9 +1174,6 @@
 										</Property>
 										<Property Name="Index">
 											<I32>5</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/Oqus/Yaw" />
 										</Property>
 									</Properties>
 									<Errors />
@@ -1415,13 +1292,13 @@
 							<Description />
 							<Properties>
 								<Property Name="Base Rate">
-									<Double>10000</Double>
+									<Double>200000</Double>
 								</Property>
 								<Property Name="DLL Size">
-									<I32>136560</I32>
+									<I32>126879</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608747.8167467</Double>
+									<Double>3568293721.8842397</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -1442,7 +1319,7 @@
 									<Boolean>false</Boolean>
 								</Property>
 								<Property Name="User Rate">
-									<Double>10000</Double>
+									<Double>200000</Double>
 								</Property>
 								<Property Name="visible">
 									<U32>0</U32>
@@ -1465,7 +1342,7 @@
 										<ForceDownload>false</ForceDownload>
 										<RTDestination>c:\ni-rt\system\ctrl_sixaxis2thruster.out</RTDestination>
 										<SupportedTarget>VxWorks</SupportedTarget>
-										<MD5>ad77c5384460ade7969cee5ff269db72</MD5>
+										<MD5>d10afe34d53a8eacdacfafe879a2e049</MD5>
 									</DependentFile>
 								</Property>
 								<Property Name="GlobalParameterScopes">
@@ -1527,78 +1404,6 @@
 								<Description />
 								<Properties />
 								<Errors />
-								<Channel Name="PosXLeft" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>PosXLeft</String>
-										</Property>
-										<Property Name="Index">
-											<I32>0</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/PosXLeft" />
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0</Elem>
-									</DefaultValue>
-								</Channel>
-								<Channel Name="PosYLeft" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>PosYLeft</String>
-										</Property>
-										<Property Name="Index">
-											<I32>1</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/PosYLeft" />
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0</Elem>
-									</DefaultValue>
-								</Channel>
-								<Channel Name="PosYRight" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>PosYRight</String>
-										</Property>
-										<Property Name="Index">
-											<I32>2</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/PosYRight" />
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0</Elem>
-									</DefaultValue>
-								</Channel>
-								<Channel Name="PosXRight" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>PosXRight</String>
-										</Property>
-										<Property Name="Index">
-											<I32>3</I32>
-										</Property>
-										<Property Name="DataSource">
-											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/PosXRight" />
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0</Elem>
-									</DefaultValue>
-								</Channel>
 								<Channel Name="Start" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
 									<Description />
 									<Properties>
@@ -1606,7 +1411,7 @@
 											<String>Start</String>
 										</Property>
 										<Property Name="Index">
-											<I32>4</I32>
+											<I32>2</I32>
 										</Property>
 										<Property Name="DataSource">
 											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/Start" />
@@ -1624,7 +1429,7 @@
 											<String>ArrowUp</String>
 										</Property>
 										<Property Name="Index">
-											<I32>5</I32>
+											<I32>0</I32>
 										</Property>
 										<Property Name="DataSource">
 											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/ArrowUP" />
@@ -1642,7 +1447,7 @@
 											<String>L2_continuous</String>
 										</Property>
 										<Property Name="Index">
-											<I32>6</I32>
+											<I32>3</I32>
 										</Property>
 										<Property Name="DataSource">
 											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/L2_cont" />
@@ -1660,7 +1465,7 @@
 											<String>R2_continuous</String>
 										</Property>
 										<Property Name="Index">
-											<I32>7</I32>
+											<I32>4</I32>
 										</Property>
 										<Property Name="DataSource">
 											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/R2_cont" />
@@ -1678,7 +1483,7 @@
 											<String>ArrowDown</String>
 										</Property>
 										<Property Name="Index">
-											<I32>8</I32>
+											<I32>1</I32>
 										</Property>
 										<Property Name="DataSource">
 											<DataSourceNode Channel="Targets/Controller/Custom Devices/WL_Joystick/ArrowDown" />
@@ -1701,7 +1506,7 @@
 											<String>u_VSP1</String>
 										</Property>
 										<Property Name="Index">
-											<I32>9</I32>
+											<I32>5</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1716,7 +1521,7 @@
 											<String>alpha_VSP2</String>
 										</Property>
 										<Property Name="Index">
-											<I32>10</I32>
+											<I32>6</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1731,7 +1536,7 @@
 											<String>alpha_VSP1</String>
 										</Property>
 										<Property Name="Index">
-											<I32>11</I32>
+											<I32>7</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1746,7 +1551,7 @@
 											<String>u_VSP2</String>
 										</Property>
 										<Property Name="Index">
-											<I32>12</I32>
+											<I32>8</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1761,7 +1566,7 @@
 											<String>u_BT</String>
 										</Property>
 										<Property Name="Index">
-											<I32>13</I32>
+											<I32>9</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1776,7 +1581,7 @@
 											<String>omega_VSP1</String>
 										</Property>
 										<Property Name="Index">
-											<I32>14</I32>
+											<I32>10</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1791,7 +1596,7 @@
 											<String>omega_VSP2</String>
 										</Property>
 										<Property Name="Index">
-											<I32>15</I32>
+											<I32>11</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -1821,7 +1626,7 @@
 									<I32>124629</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608747.7217417</Double>
+									<Double>3568278556.6990438</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -2131,7 +1936,7 @@
 									<I32>250810</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608747.488728</Double>
+									<Double>3568278548.6550984</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -3160,10 +2965,10 @@
 									<Double>10000</Double>
 								</Property>
 								<Property Name="DLL Size">
-									<I32>126662</I32>
+									<I32>123950</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539668272.707376</Double>
+									<Double>3568278556.9480677</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -3207,7 +3012,7 @@
 										<ForceDownload>false</ForceDownload>
 										<RTDestination>c:\ni-rt\system\ctrl_student.out</RTDestination>
 										<SupportedTarget>VxWorks</SupportedTarget>
-										<MD5>50de22ab4ba8c2a8ae557c3351df2adb</MD5>
+										<MD5>64a0669a937fe86bef7ce2debec38138</MD5>
 									</DependentFile>
 								</Property>
 								<Property Name="GlobalParameterScopes">
@@ -3290,7 +3095,7 @@
 												<String>pose measured/y_m</String>
 											</Property>
 											<Property Name="Index">
-												<I32>3</I32>
+												<I32>1</I32>
 											</Property>
 											<Property Name="DataSource">
 												<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/measurement/Outports/pose measured/y_m" />
@@ -3308,7 +3113,7 @@
 												<String>pose measured/psi_m</String>
 											</Property>
 											<Property Name="Index">
-												<I32>4</I32>
+												<I32>2</I32>
 											</Property>
 											<Property Name="DataSource">
 												<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/measurement/Outports/pose measured/psi_m" />
@@ -3326,7 +3131,7 @@
 												<String>pose measured/x_m</String>
 											</Property>
 											<Property Name="Index">
-												<I32>2</I32>
+												<I32>0</I32>
 											</Property>
 											<Property Name="DataSource">
 												<DataSourceNode Channel="Targets/Controller/Simulation Models/Models/measurement/Outports/pose measured/x_m" />
@@ -3363,36 +3168,6 @@
 										<Errors />
 									</Section>
 								</Section>
-								<Channel Name="X_VSP" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>X_VSP</String>
-										</Property>
-										<Property Name="Index">
-											<I32>0</I32>
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0</Elem>
-									</DefaultValue>
-								</Channel>
-								<Channel Name="N_BT" TypeGUID="03D3B985-1485-13A6-56FC3200A1C00087" RowDim="1" ColDim="1" Units="" BitFields="7">
-									<Description />
-									<Properties>
-										<Property Name="Model Path">
-											<String>N_BT</String>
-										</Property>
-										<Property Name="Index">
-											<I32>1</I32>
-										</Property>
-									</Properties>
-									<Errors />
-									<DefaultValue>
-										<Elem>0</Elem>
-									</DefaultValue>
-								</Channel>
 							</Section>
 							<Section Name="Outports" TypeGUID="03D3B9F3-1485-13A6-5698C14838D6AA3C">
 								<Description />
@@ -3409,7 +3184,7 @@
 												<String>u/alpha_VSP2</String>
 											</Property>
 											<Property Name="Index">
-												<I32>6</I32>
+												<I32>4</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3424,7 +3199,7 @@
 												<String>u/omega_VSP1</String>
 											</Property>
 											<Property Name="Index">
-												<I32>7</I32>
+												<I32>5</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3439,7 +3214,7 @@
 												<String>u/omega_VSP2</String>
 											</Property>
 											<Property Name="Index">
-												<I32>8</I32>
+												<I32>6</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3454,7 +3229,7 @@
 												<String>u/alpha_VSP1</String>
 											</Property>
 											<Property Name="Index">
-												<I32>9</I32>
+												<I32>7</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3469,7 +3244,7 @@
 												<String>u/u_BT</String>
 											</Property>
 											<Property Name="Index">
-												<I32>10</I32>
+												<I32>8</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3484,7 +3259,7 @@
 												<String>u/u_VSP1</String>
 											</Property>
 											<Property Name="Index">
-												<I32>11</I32>
+												<I32>9</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3499,7 +3274,7 @@
 												<String>u/u_VSP2</String>
 											</Property>
 											<Property Name="Index">
-												<I32>12</I32>
+												<I32>10</I32>
 											</Property>
 										</Properties>
 										<Errors />
@@ -3565,7 +3340,7 @@
 											<String>control input u exceeds bounds</String>
 										</Property>
 										<Property Name="Index">
-											<I32>5</I32>
+											<I32>3</I32>
 										</Property>
 									</Properties>
 									<Errors />
@@ -3595,7 +3370,7 @@
 									<I32>173009</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608748.0407596</Double>
+									<Double>3568278556.9861536</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -4519,7 +4294,7 @@
 									<I32>133069</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608748.1547661</Double>
+									<Double>3568278557.0369349</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -4823,7 +4598,7 @@
 									<I32>149185</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608749.7708583</Double>
+									<Double>3568278557.4158406</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
@@ -5319,7 +5094,7 @@
 									<I32>140015</I32>
 								</Property>
 								<Property Name="DLL Timestamp">
-									<Double>3539608748.2487717</Double>
+									<Double>3568278557.1736536</Double>
 								</Property>
 								<Property Name="Decimation">
 									<I32>1</I32>
