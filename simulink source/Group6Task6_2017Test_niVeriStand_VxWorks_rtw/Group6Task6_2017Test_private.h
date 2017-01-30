@@ -7,9 +7,9 @@
  *
  * Code generation for model "Group6Task6_2017Test".
  *
- * Model version              : 1.118
+ * Model version              : 1.122
  * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
- * C source code generated on : Mon Jan 30 20:29:33 2017
+ * C source code generated on : Mon Jan 30 21:48:55 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -25,6 +25,7 @@
 #include "multiword_types.h"
 #include "zero_crossing_types.h"
 
+extern real_T rt_atan2d_snf(real_T u0, real_T u1);
 extern void Group6Task6_201_MATLABFunction2(real_T rtu_u_inn,
   B_MATLABFunction2_Group6Task6_T *localB);
 

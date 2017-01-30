@@ -7,9 +7,9 @@
  *
  * Code generation for model "Group6Task6_2017Test".
  *
- * Model version              : 1.118
+ * Model version              : 1.122
  * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
- * C source code generated on : Mon Jan 30 20:29:33 2017
+ * C source code generated on : Mon Jan 30 21:48:55 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -51,6 +51,42 @@ void Group6Task6_201_MATLABFunction2(real_T rtu_u_inn,
   }
 }
 
+real_T rt_atan2d_snf(real_T u0, real_T u1)
+{
+  real_T y;
+  int32_T u0_0;
+  int32_T u1_0;
+  if (rtIsNaN(u0) || rtIsNaN(u1)) {
+    y = (rtNaN);
+  } else if (rtIsInf(u0) && rtIsInf(u1)) {
+    if (u0 > 0.0) {
+      u0_0 = 1;
+    } else {
+      u0_0 = -1;
+    }
+
+    if (u1 > 0.0) {
+      u1_0 = 1;
+    } else {
+      u1_0 = -1;
+    }
+
+    y = atan2(u0_0, u1_0);
+  } else if (u1 == 0.0) {
+    if (u0 > 0.0) {
+      y = RT_PI / 2.0;
+    } else if (u0 < 0.0) {
+      y = -(RT_PI / 2.0);
+    } else {
+      y = 0.0;
+    }
+  } else {
+    y = atan2(u0, u1);
+  }
+
+  return y;
+}
+
 /* Model output function */
 static void Group6Task6_2017Test_output(void)
 {
@@ -86,7 +122,7 @@ static void Group6Task6_2017Test_output(void)
   if (current_condition == 2.0) {
     /* '<S5>:1:13' */
     /* '<S5>:1:15' */
-    rtb_tau_x = Group6Task6_2017Test_B.PosYLeft;
+    rtb_tau_x = -Group6Task6_2017Test_B.PosYLeft;
 
     /* '<S5>:1:16' */
     rtb_tau_y = 0.0;
@@ -95,7 +131,7 @@ static void Group6Task6_2017Test_output(void)
     rtb_tau_yaw = Group6Task6_2017Test_B.PosXLeft;
   } else {
     /* '<S5>:1:19' */
-    rtb_tau_x = Group6Task6_2017Test_B.PosYLeft;
+    rtb_tau_x = -Group6Task6_2017Test_B.PosYLeft;
 
     /* '<S5>:1:20' */
     rtb_tau_yaw = Group6Task6_2017Test_B.R2_continuous;
@@ -132,7 +168,7 @@ static void Group6Task6_2017Test_output(void)
     Group6Task6_2017Test_P.Constant_Value[1];
 
   /* '<S2>:1:5' */
-  Group6Task6_2017Test_B.alpha = atan(current_condition / rtb_tau_x);
+  Group6Task6_2017Test_B.alpha = rt_atan2d_snf(current_condition, rtb_tau_x);
 
   /* MATLAB Function: '<Root>/MATLAB Function3' */
   Group6Task6_201_MATLABFunction2(rtb_U_bp,
@@ -915,8 +951,8 @@ NI_Task NI_TaskList[] DataSection(".NIVS.tasklist") =
 int NI_NumTasks DataSection(".NIVS.numtasks") = 1;
 static char* NI_CompiledModelName DataSection(".NIVS.compiledmodelname") =
   "group6task6_2017test";
-static char* NI_CompiledModelVersion = "1.118";
-static char* NI_CompiledModelDateTime = "Mon Jan 30 20:29:32 2017";
+static char* NI_CompiledModelVersion = "1.122";
+static char* NI_CompiledModelDateTime = "Mon Jan 30 21:48:55 2017";
 static char* NI_builder DataSection(".NIVS.builder") =
   "NI VeriStand 2014.0.0.82 (2014) RTW Build";
 static char* NI_BuilderVersion DataSection(".NIVS.builderversion") =
