@@ -9,11 +9,15 @@
 /*
  * ctrl_sixaxis2force_data.c
  *
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * Code generation for model "ctrl_sixaxis2force".
  *
- * Model version              : 1.26
- * Simulink Coder version : 8.6 (R2014a) 27-Dec-2013
- * C source code generated on : Sun Mar 08 15:44:17 2015
+ * Model version              : 1.53
+ * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
+ * C source code generated on : Mon Jan 30 18:05:39 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -26,6 +30,17 @@
 
 /* Block parameters (auto storage) */
 P_ctrl_sixaxis2force_T ctrl_sixaxis2force_P = {
+  0.0,                                 /* Mask Parameter: Ramp_X0
+                                        * Referenced by: '<S3>/Constant1'
+                                        */
+  0.1,                                 /* Mask Parameter: Ramp_slope
+                                        * Referenced by: '<S3>/Step'
+                                        */
+  0.0,                                 /* Mask Parameter: Ramp_start
+                                        * Referenced by:
+                                        *   '<S3>/Constant'
+                                        *   '<S3>/Step'
+                                        */
   -1.0,                                /* Expression: width
                                         * Referenced by: '<Root>/PosXLeft'
                                         */
@@ -62,9 +77,6 @@ P_ctrl_sixaxis2force_T ctrl_sixaxis2force_P = {
   1.0,                                 /* Expression: btype
                                         * Referenced by: '<Root>/PosYLeft'
                                         */
-  -1.0,                                /* Expression: -1
-                                        * Referenced by: '<Root>/Gain1'
-                                        */
   -1.0,                                /* Expression: width
                                         * Referenced by: '<Root>/L2_continuous'
                                         */
@@ -100,12 +112,6 @@ P_ctrl_sixaxis2force_T ctrl_sixaxis2force_P = {
                                         */
   1.0,                                 /* Expression: btype
                                         * Referenced by: '<Root>/R2_continuous'
-                                        */
-  -0.5,                                /* Expression: -.5
-                                        * Referenced by: '<Root>/Gain'
-                                        */
-  1.0,                                 /* Expression: 1
-                                        * Referenced by: '<Root>/True'
                                         */
   -1.0,                                /* Expression: width
                                         * Referenced by: '<Root>/u_BT'
@@ -197,6 +203,15 @@ P_ctrl_sixaxis2force_T ctrl_sixaxis2force_P = {
   0.0,                                 /* Expression: btype
                                         * Referenced by: '<Root>/alpha_VSP2'
                                         */
+  0.0,                                 /* Expression: 0
+                                        * Referenced by: '<S3>/Step'
+                                        */
+  0.3,                                 /* Expression: 0.3
+                                        * Referenced by: '<Root>/Saturation'
+                                        */
+  0.0,                                 /* Expression: 0
+                                        * Referenced by: '<Root>/Saturation'
+                                        */
   -1.0,                                /* Expression: width
                                         * Referenced by: '<Root>/omega_VSP1'
                                         */
@@ -249,6 +264,12 @@ typedef struct {
 NI_ParamSizeWidth P_ctrl_sixaxis2force_T_sizes[] DataSection(
   ".NIVS.defaultparamsizes") = {
   { sizeof(P_ctrl_sixaxis2force_T), 1 },
+
+  { sizeof(real_T), 1, 0 },
+
+  { sizeof(real_T), 1, 0 },
+
+  { sizeof(real_T), 1, 0 },
 
   { sizeof(real_T), 1, 0 },
 

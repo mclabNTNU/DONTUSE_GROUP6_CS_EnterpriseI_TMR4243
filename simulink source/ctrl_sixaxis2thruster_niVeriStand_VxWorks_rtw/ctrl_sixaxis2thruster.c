@@ -7,9 +7,9 @@
  *
  * Code generation for model "ctrl_sixaxis2thruster".
  *
- * Model version              : 1.39
+ * Model version              : 1.52
  * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
- * C source code generated on : Thu Jan 26 17:41:41 2017
+ * C source code generated on : Mon Jan 30 17:14:06 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -35,37 +35,57 @@ RT_MODEL_ctrl_sixaxis2thruste_T *const ctrl_sixaxis2thruster_M =
 /* Model output function */
 static void ctrl_sixaxis2thruster_output(void)
 {
+  /* local block i/o variables */
+  real_T rtb_Clock;
+  real_T rtb_Output;
   real_T rtb_u;
 
-  /* InitialCondition: '<Root>/IC' incorporates:
-   *  Memory: '<Root>/Memory'
-   */
-  if (ctrl_sixaxis2thruster_DW.IC_FirstOutputTime) {
-    ctrl_sixaxis2thruster_DW.IC_FirstOutputTime = false;
-    ctrl_sixaxis2thruster_B.IC = ctrl_sixaxis2thruster_P.IC_Value;
-  } else {
-    ctrl_sixaxis2thruster_B.IC = ctrl_sixaxis2thruster_DW.Memory_PreviousInput;
-  }
+  /* Memory: '<Root>/Memory' */
+  ctrl_sixaxis2thruster_B.Memory = ctrl_sixaxis2thruster_DW.Memory_PreviousInput;
 
-  /* End of InitialCondition: '<Root>/IC' */
+  /* Clock: '<Root>/Clock' */
+  rtb_Clock = ctrl_sixaxis2thruster_M->Timing.t[0];
+
+  /* Memory: '<Root>/Memory1' */
+  ctrl_sixaxis2thruster_B.Memory1 =
+    ctrl_sixaxis2thruster_DW.Memory1_PreviousInput;
 
   /* MATLAB Function: '<Root>/MATLAB Function' */
   /* MATLAB Function 'MATLAB Function': '<S1>:1' */
   if (ctrl_sixaxis2thruster_B.Start == 1.0) {
+    /* '<S1>:1:4' */
     /* '<S1>:1:5' */
-    /* '<S1>:1:7' */
     rtb_u = 0.0;
-  } else if (ctrl_sixaxis2thruster_B.ArrowUp == 1.0) {
+
+    /* '<S1>:1:6' */
+    ctrl_sixaxis2thruster_B.current_time = ctrl_sixaxis2thruster_B.Memory1;
+  } else if (rtb_Clock < ctrl_sixaxis2thruster_B.Memory1 + 50.0) {
+    /* '<S1>:1:7' */
     /* '<S1>:1:8' */
+    rtb_u = ctrl_sixaxis2thruster_B.Memory;
+
+    /* '<S1>:1:9' */
+    ctrl_sixaxis2thruster_B.current_time = ctrl_sixaxis2thruster_B.Memory1;
+  } else if (ctrl_sixaxis2thruster_B.ArrowUp == 1.0) {
     /* '<S1>:1:10' */
-    rtb_u = ctrl_sixaxis2thruster_B.IC + 0.1;
-  } else if (ctrl_sixaxis2thruster_B.ArrowDown == 1.0) {
+    /* '<S1>:1:11' */
+    rtb_u = ctrl_sixaxis2thruster_B.Memory + 0.1;
+
     /* '<S1>:1:12' */
+    ctrl_sixaxis2thruster_B.current_time = rtb_Clock;
+  } else if (ctrl_sixaxis2thruster_B.ArrowDown == 1.0) {
+    /* '<S1>:1:13' */
     /* '<S1>:1:14' */
-    rtb_u = ctrl_sixaxis2thruster_B.IC - 0.1;
+    rtb_u = ctrl_sixaxis2thruster_B.Memory - 0.1;
+
+    /* '<S1>:1:15' */
+    ctrl_sixaxis2thruster_B.current_time = rtb_Clock;
   } else {
-    /* '<S1>:1:16' */
-    rtb_u = ctrl_sixaxis2thruster_B.IC;
+    /* '<S1>:1:17' */
+    rtb_u = ctrl_sixaxis2thruster_B.Memory;
+
+    /* '<S1>:1:18' */
+    ctrl_sixaxis2thruster_B.current_time = rtb_Clock;
   }
 
   /* End of MATLAB Function: '<Root>/MATLAB Function' */
@@ -88,6 +108,41 @@ static void ctrl_sixaxis2thruster_output(void)
    */
   ctrl_sixaxis2thruster_B.Gain = (ctrl_sixaxis2thruster_B.L2_continuous -
     ctrl_sixaxis2thruster_B.R2_continuous) * ctrl_sixaxis2thruster_P.Gain_Gain;
+
+  /* Clock: '<S2>/Clock' */
+  rtb_Output = ctrl_sixaxis2thruster_M->Timing.t[0];
+
+  /* Step: '<S2>/Step' */
+  if (ctrl_sixaxis2thruster_M->Timing.t[0] < ctrl_sixaxis2thruster_P.Ramp_start)
+  {
+    rtb_u = ctrl_sixaxis2thruster_P.Step_Y0;
+  } else {
+    rtb_u = ctrl_sixaxis2thruster_P.Ramp_slope;
+  }
+
+  /* End of Step: '<S2>/Step' */
+
+  /* Sum: '<S2>/Output' incorporates:
+   *  Constant: '<S2>/Constant'
+   *  Constant: '<S2>/Constant1'
+   *  Product: '<S2>/Product'
+   *  Sum: '<S2>/Sum'
+   */
+  rtb_Output = (rtb_Output - ctrl_sixaxis2thruster_P.Ramp_start) * rtb_u +
+    ctrl_sixaxis2thruster_P.Ramp_X0;
+
+  /* Saturate: '<Root>/Saturation1' */
+  if (rtb_Output > ctrl_sixaxis2thruster_P.Saturation1_UpperSat) {
+    ctrl_sixaxis2thruster_B.Saturation1 =
+      ctrl_sixaxis2thruster_P.Saturation1_UpperSat;
+  } else if (rtb_Output < ctrl_sixaxis2thruster_P.Saturation1_LowerSat) {
+    ctrl_sixaxis2thruster_B.Saturation1 =
+      ctrl_sixaxis2thruster_P.Saturation1_LowerSat;
+  } else {
+    ctrl_sixaxis2thruster_B.Saturation1 = rtb_Output;
+  }
+
+  /* End of Saturate: '<Root>/Saturation1' */
 }
 
 /* Model update function */
@@ -96,6 +151,10 @@ static void ctrl_sixaxis2thruster_update(void)
   /* Update for Memory: '<Root>/Memory' */
   ctrl_sixaxis2thruster_DW.Memory_PreviousInput =
     ctrl_sixaxis2thruster_B.Saturation;
+
+  /* Update for Memory: '<Root>/Memory1' */
+  ctrl_sixaxis2thruster_DW.Memory1_PreviousInput =
+    ctrl_sixaxis2thruster_B.current_time;
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
@@ -115,18 +174,39 @@ static void ctrl_sixaxis2thruster_update(void)
     ctrl_sixaxis2thruster_M->Timing.stepSize0 +
     ctrl_sixaxis2thruster_M->Timing.clockTickH0 *
     ctrl_sixaxis2thruster_M->Timing.stepSize0 * 4294967296.0;
+
+  {
+    /* Update absolute timer for sample time: [0.2s, 0.0s] */
+    /* The "clockTick1" counts the number of times the code of this task has
+     * been executed. The absolute time is the multiplication of "clockTick1"
+     * and "Timing.stepSize1". Size of "clockTick1" ensures timer will not
+     * overflow during the application lifespan selected.
+     * Timer of this task consists of two 32 bit unsigned integers.
+     * The two integers represent the low bits Timing.clockTick1 and the high bits
+     * Timing.clockTickH1. When the low bit overflows to 0, the high bits increment.
+     */
+    if (!(++ctrl_sixaxis2thruster_M->Timing.clockTick1)) {
+      ++ctrl_sixaxis2thruster_M->Timing.clockTickH1;
+    }
+
+    ctrl_sixaxis2thruster_M->Timing.t[1] =
+      ctrl_sixaxis2thruster_M->Timing.clockTick1 *
+      ctrl_sixaxis2thruster_M->Timing.stepSize1 +
+      ctrl_sixaxis2thruster_M->Timing.clockTickH1 *
+      ctrl_sixaxis2thruster_M->Timing.stepSize1 * 4294967296.0;
+  }
 }
 
 /* Model initialize function */
 static void ctrl_sixaxis2thruster_initialize(void)
 {
-  /* Start for InitialCondition: '<Root>/IC' */
-  ctrl_sixaxis2thruster_B.IC = ctrl_sixaxis2thruster_P.IC_Value;
-  ctrl_sixaxis2thruster_DW.IC_FirstOutputTime = true;
-
   /* InitializeConditions for Memory: '<Root>/Memory' */
   ctrl_sixaxis2thruster_DW.Memory_PreviousInput =
     ctrl_sixaxis2thruster_P.Memory_X0;
+
+  /* InitializeConditions for Memory: '<Root>/Memory1' */
+  ctrl_sixaxis2thruster_DW.Memory1_PreviousInput =
+    ctrl_sixaxis2thruster_P.Memory1_X0;
 }
 
 /* Model terminate function */
@@ -184,10 +264,28 @@ RT_MODEL_ctrl_sixaxis2thruste_T *ctrl_sixaxis2thruster(void)
   (void) memset((void *)ctrl_sixaxis2thruster_M, 0,
                 sizeof(RT_MODEL_ctrl_sixaxis2thruste_T));
 
+  {
+    /* Setup solver object */
+    rtsiSetSimTimeStepPtr(&ctrl_sixaxis2thruster_M->solverInfo,
+                          &ctrl_sixaxis2thruster_M->Timing.simTimeStep);
+    rtsiSetTPtr(&ctrl_sixaxis2thruster_M->solverInfo, &rtmGetTPtr
+                (ctrl_sixaxis2thruster_M));
+    rtsiSetStepSizePtr(&ctrl_sixaxis2thruster_M->solverInfo,
+                       &ctrl_sixaxis2thruster_M->Timing.stepSize0);
+    rtsiSetErrorStatusPtr(&ctrl_sixaxis2thruster_M->solverInfo,
+                          (&rtmGetErrorStatus(ctrl_sixaxis2thruster_M)));
+    rtsiSetRTModelPtr(&ctrl_sixaxis2thruster_M->solverInfo,
+                      ctrl_sixaxis2thruster_M);
+  }
+
+  rtsiSetSimTimeStep(&ctrl_sixaxis2thruster_M->solverInfo, MAJOR_TIME_STEP);
+  rtsiSetSolverName(&ctrl_sixaxis2thruster_M->solverInfo,"FixedStepDiscrete");
+
   /* Initialize timing info */
   {
     int_T *mdlTsMap = ctrl_sixaxis2thruster_M->Timing.sampleTimeTaskIDArray;
     mdlTsMap[0] = 0;
+    mdlTsMap[1] = 1;
     ctrl_sixaxis2thruster_M->Timing.sampleTimeTaskIDPtr = (&mdlTsMap[0]);
     ctrl_sixaxis2thruster_M->Timing.sampleTimes =
       (&ctrl_sixaxis2thruster_M->Timing.sampleTimesArray[0]);
@@ -195,10 +293,12 @@ RT_MODEL_ctrl_sixaxis2thruste_T *ctrl_sixaxis2thruster(void)
       (&ctrl_sixaxis2thruster_M->Timing.offsetTimesArray[0]);
 
     /* task periods */
-    ctrl_sixaxis2thruster_M->Timing.sampleTimes[0] = (0.2);
+    ctrl_sixaxis2thruster_M->Timing.sampleTimes[0] = (0.0);
+    ctrl_sixaxis2thruster_M->Timing.sampleTimes[1] = (0.2);
 
     /* task offsets */
     ctrl_sixaxis2thruster_M->Timing.offsetTimes[0] = (0.0);
+    ctrl_sixaxis2thruster_M->Timing.offsetTimes[1] = (0.0);
   }
 
   rtmSetTPtr(ctrl_sixaxis2thruster_M, &ctrl_sixaxis2thruster_M->Timing.tArray[0]);
@@ -206,11 +306,13 @@ RT_MODEL_ctrl_sixaxis2thruste_T *ctrl_sixaxis2thruster(void)
   {
     int_T *mdlSampleHits = ctrl_sixaxis2thruster_M->Timing.sampleHitArray;
     mdlSampleHits[0] = 1;
+    mdlSampleHits[1] = 1;
     ctrl_sixaxis2thruster_M->Timing.sampleHits = (&mdlSampleHits[0]);
   }
 
   rtmSetTFinal(ctrl_sixaxis2thruster_M, -1);
   ctrl_sixaxis2thruster_M->Timing.stepSize0 = 0.2;
+  ctrl_sixaxis2thruster_M->Timing.stepSize1 = 0.2;
 
   /* Setup for data logging */
   {
@@ -260,10 +362,10 @@ RT_MODEL_ctrl_sixaxis2thruste_T *ctrl_sixaxis2thruster(void)
   ctrl_sixaxis2thruster_M->Sizes.numY = (0);/* Number of model outputs */
   ctrl_sixaxis2thruster_M->Sizes.numU = (0);/* Number of model inputs */
   ctrl_sixaxis2thruster_M->Sizes.sysDirFeedThru = (0);/* The model is not direct feedthrough */
-  ctrl_sixaxis2thruster_M->Sizes.numSampTimes = (1);/* Number of sample times */
-  ctrl_sixaxis2thruster_M->Sizes.numBlocks = (22);/* Number of blocks */
-  ctrl_sixaxis2thruster_M->Sizes.numBlockIO = (8);/* Number of block outputs */
-  ctrl_sixaxis2thruster_M->Sizes.numBlockPrms = (80);/* Sum of parameter "widths" */
+  ctrl_sixaxis2thruster_M->Sizes.numSampTimes = (2);/* Number of sample times */
+  ctrl_sixaxis2thruster_M->Sizes.numBlocks = (31);/* Number of blocks */
+  ctrl_sixaxis2thruster_M->Sizes.numBlockIO = (11);/* Number of block outputs */
+  ctrl_sixaxis2thruster_M->Sizes.numBlockPrms = (86);/* Sum of parameter "widths" */
   return ctrl_sixaxis2thruster_M;
 }
 
@@ -457,7 +559,7 @@ void SetExternalInputs(double* data, int* TaskSampleHit)
   }
 
   // L2_continuous
-  if (TaskSampleHit[0]) {
+  if (TaskSampleHit[1]) {
     NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_B.L2_continuous, 0,
       data[index++], 0, 0);
   } else {
@@ -465,7 +567,7 @@ void SetExternalInputs(double* data, int* TaskSampleHit)
   }
 
   // R2_continuous
-  if (TaskSampleHit[0]) {
+  if (TaskSampleHit[1]) {
     NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_B.R2_continuous, 0,
       data[index++], 0, 0);
   } else {
@@ -492,15 +594,15 @@ void SetExternalOutputs(double* data, int* TaskSampleHit)
   }
 
   // alpha_VSP2: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
+  if (TaskSampleHit[1]) {              // sample and hold
     ni_extout[index++] = NIRT_GetValueByDataType
-      (&ctrl_sixaxis2thruster_P.Constant1_Value,0,0,0);
+      (&ctrl_sixaxis2thruster_P.Constant2_Value,0,0,0);
   } else {
     index += 1;
   }
 
   // alpha_VSP1: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
+  if (TaskSampleHit[1]) {              // sample and hold
     ni_extout[index++] = NIRT_GetValueByDataType
       (&ctrl_sixaxis2thruster_P.Constant1_Value,0,0,0);
   } else {
@@ -516,7 +618,7 @@ void SetExternalOutputs(double* data, int* TaskSampleHit)
   }
 
   // u_BT: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
+  if (TaskSampleHit[1]) {              // sample and hold
     ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2thruster_B.Gain,0,
       0,0);
   } else {
@@ -526,7 +628,7 @@ void SetExternalOutputs(double* data, int* TaskSampleHit)
   // omega_VSP1: Virtual Signal # 0
   if (TaskSampleHit[0]) {              // sample and hold
     ni_extout[index++] = NIRT_GetValueByDataType
-      (&ctrl_sixaxis2thruster_P.Constant_Value,0,0,0);
+      (&ctrl_sixaxis2thruster_B.Saturation1,0,0,0);
   } else {
     index += 1;
   }
@@ -534,7 +636,7 @@ void SetExternalOutputs(double* data, int* TaskSampleHit)
   // omega_VSP2: Virtual Signal # 0
   if (TaskSampleHit[0]) {              // sample and hold
     ni_extout[index++] = NIRT_GetValueByDataType
-      (&ctrl_sixaxis2thruster_P.Constant_Value,0,0,0);
+      (&ctrl_sixaxis2thruster_B.Saturation1,0,0,0);
   } else {
     index += 1;
   }
@@ -558,7 +660,7 @@ int NI_InitExternalOutputs()
 
   // alpha_VSP2: Virtual Signal # 0
   ni_extout[index++] = NIRT_GetValueByDataType
-    (&ctrl_sixaxis2thruster_P.Constant1_Value,0,0,0);
+    (&ctrl_sixaxis2thruster_P.Constant2_Value,0,0,0);
 
   // alpha_VSP1: Virtual Signal # 0
   ni_extout[index++] = NIRT_GetValueByDataType
@@ -574,40 +676,61 @@ int NI_InitExternalOutputs()
 
   // omega_VSP1: Virtual Signal # 0
   ni_extout[index++] = NIRT_GetValueByDataType
-    (&ctrl_sixaxis2thruster_P.Constant_Value,0,0,0);
+    (&ctrl_sixaxis2thruster_B.Saturation1,0,0,0);
 
   // omega_VSP2: Virtual Signal # 0
   ni_extout[index++] = NIRT_GetValueByDataType
-    (&ctrl_sixaxis2thruster_P.Constant_Value,0,0,0);
+    (&ctrl_sixaxis2thruster_B.Saturation1,0,0,0);
   return NI_OK;
 }
 
 // by default, all elements (inclulding	scalars) have 2 dimensions [1,1]
 static NI_Parameter NI_ParamList[] DataSection(".NIVS.paramlist") =
 {
-  { 0, "ctrl_sixaxis2thruster/Memory/X0", offsetof(P_ctrl_sixaxis2thruster_T,
-    Memory_X0), 22, 1, 2, 0, 0 },
+  { 0, "ctrl_sixaxis2thruster/Ramp/Constant1/Value", offsetof
+    (P_ctrl_sixaxis2thruster_T, Ramp_X0), 22, 1, 2, 0, 0 },
 
-  { 1, "ctrl_sixaxis2thruster/IC/Value", offsetof(P_ctrl_sixaxis2thruster_T,
-    IC_Value), 22, 1, 2, 2, 0 },
+  { 1, "ctrl_sixaxis2thruster/Ramp/Step/After", offsetof
+    (P_ctrl_sixaxis2thruster_T, Ramp_slope), 22, 1, 2, 2, 0 },
 
-  { 2, "ctrl_sixaxis2thruster/Saturation/UpperLimit", offsetof
-    (P_ctrl_sixaxis2thruster_T, Saturation_UpperSat), 22, 1, 2, 4, 0 },
+  { 2, "ctrl_sixaxis2thruster/Ramp/Constant/Value", offsetof
+    (P_ctrl_sixaxis2thruster_T, Ramp_start), 22, 1, 2, 4, 0 },
 
-  { 3, "ctrl_sixaxis2thruster/Saturation/LowerLimit", offsetof
-    (P_ctrl_sixaxis2thruster_T, Saturation_LowerSat), 22, 1, 2, 6, 0 },
+  { 3, "ctrl_sixaxis2thruster/Ramp/Step/Time", offsetof
+    (P_ctrl_sixaxis2thruster_T, Ramp_start), 22, 1, 2, 6, 0 },
 
-  { 4, "ctrl_sixaxis2thruster/Constant1/Value", offsetof
-    (P_ctrl_sixaxis2thruster_T, Constant1_Value), 22, 1, 2, 8, 0 },
+  { 4, "ctrl_sixaxis2thruster/Memory/X0", offsetof(P_ctrl_sixaxis2thruster_T,
+    Memory_X0), 22, 1, 2, 8, 0 },
 
-  { 5, "ctrl_sixaxis2thruster/Gain/Gain", offsetof(P_ctrl_sixaxis2thruster_T,
-    Gain_Gain), 22, 1, 2, 10, 0 },
+  { 5, "ctrl_sixaxis2thruster/Memory1/X0", offsetof(P_ctrl_sixaxis2thruster_T,
+    Memory1_X0), 22, 1, 2, 10, 0 },
 
-  { 6, "ctrl_sixaxis2thruster/Constant/Value", offsetof
-    (P_ctrl_sixaxis2thruster_T, Constant_Value), 22, 1, 2, 12, 0 },
+  { 6, "ctrl_sixaxis2thruster/Saturation/UpperLimit", offsetof
+    (P_ctrl_sixaxis2thruster_T, Saturation_UpperSat), 22, 1, 2, 12, 0 },
+
+  { 7, "ctrl_sixaxis2thruster/Saturation/LowerLimit", offsetof
+    (P_ctrl_sixaxis2thruster_T, Saturation_LowerSat), 22, 1, 2, 14, 0 },
+
+  { 8, "ctrl_sixaxis2thruster/Constant2/Value", offsetof
+    (P_ctrl_sixaxis2thruster_T, Constant2_Value), 22, 1, 2, 16, 0 },
+
+  { 9, "ctrl_sixaxis2thruster/Constant1/Value", offsetof
+    (P_ctrl_sixaxis2thruster_T, Constant1_Value), 22, 1, 2, 18, 0 },
+
+  { 10, "ctrl_sixaxis2thruster/Gain/Gain", offsetof(P_ctrl_sixaxis2thruster_T,
+    Gain_Gain), 22, 1, 2, 20, 0 },
+
+  { 11, "ctrl_sixaxis2thruster/Ramp/Step/Before", offsetof
+    (P_ctrl_sixaxis2thruster_T, Step_Y0), 22, 1, 2, 22, 0 },
+
+  { 12, "ctrl_sixaxis2thruster/Saturation1/UpperLimit", offsetof
+    (P_ctrl_sixaxis2thruster_T, Saturation1_UpperSat), 22, 1, 2, 24, 0 },
+
+  { 13, "ctrl_sixaxis2thruster/Saturation1/LowerLimit", offsetof
+    (P_ctrl_sixaxis2thruster_T, Saturation1_LowerSat), 22, 1, 2, 26, 0 },
 };
 
-static int NI_ParamListSize DataSection(".NIVS.paramlistsize") = 7;
+static int NI_ParamListSize DataSection(".NIVS.paramlistsize") = 14;
 static int NI_ParamDimList[] DataSection(".NIVS.paramdimlist") =
 {
   1, 1,                                /* Parameter at index 0 */
@@ -617,6 +740,13 @@ static int NI_ParamDimList[] DataSection(".NIVS.paramdimlist") =
   1, 1,                                /* Parameter at index 4 */
   1, 1,                                /* Parameter at index 5 */
   1, 1,                                /* Parameter at index 6 */
+  1, 1,                                /* Parameter at index 7 */
+  1, 1,                                /* Parameter at index 8 */
+  1, 1,                                /* Parameter at index 9 */
+  1, 1,                                /* Parameter at index 10 */
+  1, 1,                                /* Parameter at index 11 */
+  1, 1,                                /* Parameter at index 12 */
+  1, 1,                                /* Parameter at index 13 */
 };
 
 static NI_Signal NI_SigList[] DataSection(".NIVS.siglist") =
@@ -632,34 +762,46 @@ static NI_Signal NI_SigList[] DataSection(".NIVS.siglist") =
   { 2, "ctrl_sixaxis2thruster/Start", 0, "", offsetof(B_ctrl_sixaxis2thruster_T,
     Start)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 4, 0 },
 
-  { 3, "ctrl_sixaxis2thruster/IC", 0, "", offsetof(B_ctrl_sixaxis2thruster_T, IC)
-    +0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 6, 0 },
+  { 3, "ctrl_sixaxis2thruster/Memory", 0, "", offsetof(B_ctrl_sixaxis2thruster_T,
+    Memory)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 6, 0 },
 
-  { 4, "ctrl_sixaxis2thruster/Saturation", 0, "", offsetof
+  { 4, "ctrl_sixaxis2thruster/Memory1", 0, "", offsetof
+    (B_ctrl_sixaxis2thruster_T, Memory1)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2,
+    8, 0 },
+
+  { 5, "ctrl_sixaxis2thruster/Saturation", 0, "", offsetof
     (B_ctrl_sixaxis2thruster_T, Saturation)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1,
-    2, 8, 0 },
+    2, 10, 0 },
 
-  { 5, "ctrl_sixaxis2thruster/L2_continuous", 0, "", offsetof
+  { 6, "ctrl_sixaxis2thruster/L2_continuous", 0, "", offsetof
     (B_ctrl_sixaxis2thruster_T, L2_continuous)+0*sizeof(real_T), BLOCKIO_SIG, 0,
-    1, 2, 10, 0 },
-
-  { 6, "ctrl_sixaxis2thruster/R2_continuous", 0, "", offsetof
-    (B_ctrl_sixaxis2thruster_T, R2_continuous)+0*sizeof(real_T), BLOCKIO_SIG, 0,
     1, 2, 12, 0 },
 
-  { 7, "ctrl_sixaxis2thruster/Gain", 0, "", offsetof(B_ctrl_sixaxis2thruster_T,
-    Gain)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 14, 0 },
+  { 7, "ctrl_sixaxis2thruster/R2_continuous", 0, "", offsetof
+    (B_ctrl_sixaxis2thruster_T, R2_continuous)+0*sizeof(real_T), BLOCKIO_SIG, 0,
+    1, 2, 14, 0 },
+
+  { 8, "ctrl_sixaxis2thruster/Gain", 0, "", offsetof(B_ctrl_sixaxis2thruster_T,
+    Gain)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 16, 0 },
+
+  { 9, "ctrl_sixaxis2thruster/Saturation1", 0, "", offsetof
+    (B_ctrl_sixaxis2thruster_T, Saturation1)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1,
+    2, 18, 0 },
+
+  { 10, "ctrl_sixaxis2thruster/MATLAB Function", 1, "current_time", offsetof
+    (B_ctrl_sixaxis2thruster_T, current_time)+0*sizeof(real_T), BLOCKIO_SIG, 0,
+    1, 2, 20, 0 },
 
   { -1, "", -1, "", 0, 0, 0 }
 };
 
-static int NI_SigListSize DataSection(".NIVS.siglistsize") = 8;
+static int NI_SigListSize DataSection(".NIVS.siglistsize") = 11;
 static int NI_VirtualBlockSources[1][1];
 static int NI_VirtualBlockOffsets[1][1];
 static int NI_VirtualBlockLengths[1][1];
 static int NI_SigDimList[] DataSection(".NIVS.sigdimlist") =
 {
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, };
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, };
 
 static long NI_ExtListSize DataSection(".NIVS.extlistsize") = 12;
 static NI_ExternalIO NI_ExtList[] DataSection(".NIVS.extlist") =
@@ -670,19 +812,19 @@ static NI_ExternalIO NI_ExtList[] DataSection(".NIVS.extlist") =
 
   { 2, "Start", 0, EXT_IN, 1, 1, 1 },
 
-  { 3, "L2_continuous", 0, EXT_IN, 1, 1, 1 },
+  { 3, "L2_continuous", 1, EXT_IN, 1, 1, 1 },
 
-  { 4, "R2_continuous", 0, EXT_IN, 1, 1, 1 },
+  { 4, "R2_continuous", 1, EXT_IN, 1, 1, 1 },
 
   { 0, "u_VSP1", 0, EXT_OUT, 1, 1, 1 },
 
-  { 1, "alpha_VSP2", 0, EXT_OUT, 1, 1, 1 },
+  { 1, "alpha_VSP2", 1, EXT_OUT, 1, 1, 1 },
 
-  { 2, "alpha_VSP1", 0, EXT_OUT, 1, 1, 1 },
+  { 2, "alpha_VSP1", 1, EXT_OUT, 1, 1, 1 },
 
   { 3, "u_VSP2", 0, EXT_OUT, 1, 1, 1 },
 
-  { 4, "u_BT", 0, EXT_OUT, 1, 1, 1 },
+  { 4, "u_BT", 1, EXT_OUT, 1, 1, 1 },
 
   { 5, "omega_VSP1", 0, EXT_OUT, 1, 1, 1 },
 
@@ -704,8 +846,8 @@ NI_Task NI_TaskList[] DataSection(".NIVS.tasklist") =
 int NI_NumTasks DataSection(".NIVS.numtasks") = 1;
 static char* NI_CompiledModelName DataSection(".NIVS.compiledmodelname") =
   "ctrl_sixaxis2thruster";
-static char* NI_CompiledModelVersion = "1.39";
-static char* NI_CompiledModelDateTime = "Thu Jan 26 17:41:41 2017";
+static char* NI_CompiledModelVersion = "1.52";
+static char* NI_CompiledModelDateTime = "Mon Jan 30 17:14:06 2017";
 static char* NI_builder DataSection(".NIVS.builder") =
   "NI VeriStand 2014.0.0.82 (2014) RTW Build";
 static char* NI_BuilderVersion DataSection(".NIVS.builderversion") =
@@ -1293,6 +1435,10 @@ DLL_EXPORT long NIRT_GetSimState(long* numContStates, char* contStatesNames,
     strcpy(discStatesNames + (idx++ * 100),
            "&ctrl_sixaxis2thruster_DW.Memory_PreviousInput");
     discStates[idx] = NIRT_GetValueByDataType
+      (&ctrl_sixaxis2thruster_DW.Memory1_PreviousInput, 0, 0, 0);
+    strcpy(discStatesNames + (idx++ * 100),
+           "&ctrl_sixaxis2thruster_DW.Memory1_PreviousInput");
+    discStates[idx] = NIRT_GetValueByDataType
       (&ctrl_sixaxis2thruster_DW.u_VSP1_DWORK1, 0, 0, 0);
     strcpy(discStatesNames + (idx++ * 100),
            "&ctrl_sixaxis2thruster_DW.u_VSP1_DWORK1");
@@ -1429,11 +1575,6 @@ DLL_EXPORT long NIRT_GetSimState(long* numContStates, char* contStatesNames,
       strcpy(discStatesNames + (idx++ * 100),
              "&ctrl_sixaxis2thruster_DW.NIVeriStandSignalProbe_DWORK3");
     }
-
-    discStates[idx] = NIRT_GetValueByDataType
-      (&ctrl_sixaxis2thruster_DW.IC_FirstOutputTime, 0, 8, 0);
-    strcpy(discStatesNames + (idx++ * 100),
-           "&ctrl_sixaxis2thruster_DW.IC_FirstOutputTime");
   }
 
   if (clockTicks && clockTicksNames) {
@@ -1457,6 +1598,8 @@ DLL_EXPORT long NIRT_SetSimState(double* contStates, double* discStates, long
     NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_DW.Start_DWORK1, 0,
       discStates[idx++], 0, 0);
     NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_DW.Memory_PreviousInput, 0,
+      discStates[idx++], 0, 0);
+    NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_DW.Memory1_PreviousInput, 0,
       discStates[idx++], 0, 0);
     NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_DW.u_VSP1_DWORK1, 0,
       discStates[idx++], 0, 0);
@@ -1550,13 +1693,11 @@ DLL_EXPORT long NIRT_SetSimState(double* contStates, double* discStates, long
         (&ctrl_sixaxis2thruster_DW.NIVeriStandSignalProbe_DWORK3, count,
          discStates[idx++], 18, 0);
     }
-
-    NIRT_SetValueByDataType(&ctrl_sixaxis2thruster_DW.IC_FirstOutputTime, 0,
-      discStates[idx++], 8, 0);
   }
 
   if (clockTicks) {
     S->Timing.clockTick0 = clockTicks[0];
+    S->Timing.clockTick1 = clockTicks[0];
   }
 
   return NI_OK;

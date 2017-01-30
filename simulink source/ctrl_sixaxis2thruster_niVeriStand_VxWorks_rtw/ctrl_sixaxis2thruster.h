@@ -7,9 +7,9 @@
  *
  * Code generation for model "ctrl_sixaxis2thruster".
  *
- * Model version              : 1.39
+ * Model version              : 1.52
  * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
- * C source code generated on : Thu Jan 26 17:41:41 2017
+ * C source code generated on : Mon Jan 30 17:14:06 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -720,7 +720,7 @@
 #endif
 
 #ifndef rtmIsContinuousTask
-# define rtmIsContinuousTask(rtm, tid) 0
+# define rtmIsContinuousTask(rtm, tid) ((tid) == 0)
 #endif
 
 #ifndef rtmGetErrorStatus
@@ -731,8 +731,16 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
+#ifndef rtmIsMajorTimeStep
+# define rtmIsMajorTimeStep(rtm)       (((rtm)->Timing.simTimeStep) == MAJOR_TIME_STEP)
+#endif
+
+#ifndef rtmIsMinorTimeStep
+# define rtmIsMinorTimeStep(rtm)       (((rtm)->Timing.simTimeStep) == MINOR_TIME_STEP)
+#endif
+
 #ifndef rtmIsSampleHit
-# define rtmIsSampleHit(rtm, sti, tid) ((rtm)->Timing.sampleHits[(rtm)->Timing.sampleTimeTaskIDPtr[sti]])
+# define rtmIsSampleHit(rtm, sti, tid) ((rtmIsMajorTimeStep((rtm)) && (rtm)->Timing.sampleHits[(rtm)->Timing.sampleTimeTaskIDPtr[sti]]))
 #endif
 
 #ifndef rtmGetStopRequested
@@ -805,11 +813,14 @@ typedef struct {
   real_T ArrowUp;                      /* '<Root>/ArrowUp' */
   real_T ArrowDown;                    /* '<Root>/ArrowDown' */
   real_T Start;                        /* '<Root>/Start' */
-  real_T IC;                           /* '<Root>/IC' */
+  real_T Memory;                       /* '<Root>/Memory' */
+  real_T Memory1;                      /* '<Root>/Memory1' */
   real_T Saturation;                   /* '<Root>/Saturation' */
   real_T L2_continuous;                /* '<Root>/L2_continuous' */
   real_T R2_continuous;                /* '<Root>/R2_continuous' */
   real_T Gain;                         /* '<Root>/Gain' */
+  real_T Saturation1;                  /* '<Root>/Saturation1' */
+  real_T current_time;                 /* '<Root>/MATLAB Function' */
 } B_ctrl_sixaxis2thruster_T;
 
 /* Block states (auto storage) for system '<Root>' */
@@ -818,6 +829,7 @@ typedef struct {
   real_T ArrowDown_DWORK1;             /* '<Root>/ArrowDown' */
   real_T Start_DWORK1;                 /* '<Root>/Start' */
   real_T Memory_PreviousInput;         /* '<Root>/Memory' */
+  real_T Memory1_PreviousInput;        /* '<Root>/Memory1' */
   real_T u_VSP1_DWORK1;                /* '<Root>/u_VSP1' */
   real_T alpha_VSP2_DWORK1;            /* '<Root>/alpha_VSP2' */
   real_T alpha_VSP1_DWORK1;            /* '<Root>/alpha_VSP1' */
@@ -842,7 +854,6 @@ typedef struct {
   uint8_T omega_VSP2_DWORK2[22];       /* '<Root>/omega_VSP2' */
   uint8_T NIVeriStandSignalProbe_DWORK1[22];/* '<Root>/NIVeriStandSignalProbe' */
   uint8_T NIVeriStandSignalProbe_DWORK3[65];/* '<Root>/NIVeriStandSignalProbe' */
-  boolean_T IC_FirstOutputTime;        /* '<Root>/IC' */
 } DW_ctrl_sixaxis2thruster_T;
 
 /* Backward compatible GRT Identifiers */
@@ -855,6 +866,17 @@ typedef struct {
 
 /* Parameters (auto storage) */
 struct P_ctrl_sixaxis2thruster_T_ {
+  real_T Ramp_X0;                      /* Mask Parameter: Ramp_X0
+                                        * Referenced by: '<S2>/Constant1'
+                                        */
+  real_T Ramp_slope;                   /* Mask Parameter: Ramp_slope
+                                        * Referenced by: '<S2>/Step'
+                                        */
+  real_T Ramp_start;                   /* Mask Parameter: Ramp_start
+                                        * Referenced by:
+                                        *   '<S2>/Constant'
+                                        *   '<S2>/Step'
+                                        */
   real_T ArrowUp_P1;                   /* Expression: width
                                         * Referenced by: '<Root>/ArrowUp'
                                         */
@@ -912,8 +934,8 @@ struct P_ctrl_sixaxis2thruster_T_ {
   real_T Memory_X0;                    /* Expression: 0
                                         * Referenced by: '<Root>/Memory'
                                         */
-  real_T IC_Value;                     /* Expression: 0
-                                        * Referenced by: '<Root>/IC'
+  real_T Memory1_X0;                   /* Expression: 0
+                                        * Referenced by: '<Root>/Memory1'
                                         */
   real_T Saturation_UpperSat;          /* Expression: 1
                                         * Referenced by: '<Root>/Saturation'
@@ -939,8 +961,8 @@ struct P_ctrl_sixaxis2thruster_T_ {
   real_T u_VSP1_P6;                    /* Expression: btype
                                         * Referenced by: '<Root>/u_VSP1'
                                         */
-  real_T Constant1_Value;              /* Expression: 0
-                                        * Referenced by: '<Root>/Constant1'
+  real_T Constant2_Value;              /* Expression: 0
+                                        * Referenced by: '<Root>/Constant2'
                                         */
   real_T alpha_VSP2_P1;                /* Expression: width
                                         * Referenced by: '<Root>/alpha_VSP2'
@@ -959,6 +981,9 @@ struct P_ctrl_sixaxis2thruster_T_ {
                                         */
   real_T alpha_VSP2_P6;                /* Expression: btype
                                         * Referenced by: '<Root>/alpha_VSP2'
+                                        */
+  real_T Constant1_Value;              /* Expression: 0
+                                        * Referenced by: '<Root>/Constant1'
                                         */
   real_T alpha_VSP1_P1;                /* Expression: width
                                         * Referenced by: '<Root>/alpha_VSP1'
@@ -1053,8 +1078,14 @@ struct P_ctrl_sixaxis2thruster_T_ {
   real_T u_BT_P6;                      /* Expression: btype
                                         * Referenced by: '<Root>/u_BT'
                                         */
-  real_T Constant_Value;               /* Expression: 0.3
-                                        * Referenced by: '<Root>/Constant'
+  real_T Step_Y0;                      /* Expression: 0
+                                        * Referenced by: '<S2>/Step'
+                                        */
+  real_T Saturation1_UpperSat;         /* Expression: 0.3
+                                        * Referenced by: '<Root>/Saturation1'
+                                        */
+  real_T Saturation1_LowerSat;         /* Expression: 0
+                                        * Referenced by: '<Root>/Saturation1'
                                         */
   real_T omega_VSP1_P1;                /* Expression: width
                                         * Referenced by: '<Root>/omega_VSP1'
@@ -1181,6 +1212,9 @@ struct tag_RTM_ctrl_sixaxis2thruster_T {
     uint32_T clockTick0;
     uint32_T clockTickH0;
     time_T stepSize0;
+    uint32_T clockTick1;
+    uint32_T clockTickH1;
+    time_T stepSize1;
     time_T tStart;
     time_T tFinal;
     time_T timeOfLastOutput;
@@ -1194,12 +1228,12 @@ struct tag_RTM_ctrl_sixaxis2thruster_T {
     int_T *sampleHits;
     int_T *perTaskSampleHits;
     time_T *t;
-    time_T sampleTimesArray[1];
-    time_T offsetTimesArray[1];
-    int_T sampleTimeTaskIDArray[1];
-    int_T sampleHitArray[1];
-    int_T perTaskSampleHitsArray[1];
-    time_T tArray[1];
+    time_T sampleTimesArray[2];
+    time_T offsetTimesArray[2];
+    int_T sampleTimeTaskIDArray[2];
+    int_T sampleHitArray[2];
+    int_T perTaskSampleHitsArray[4];
+    time_T tArray[2];
   } Timing;
 };
 
@@ -1243,6 +1277,7 @@ extern RT_MODEL_ctrl_sixaxis2thruste_T *const ctrl_sixaxis2thruster_M;
  *
  * '<Root>' : 'ctrl_sixaxis2thruster'
  * '<S1>'   : 'ctrl_sixaxis2thruster/MATLAB Function'
+ * '<S2>'   : 'ctrl_sixaxis2thruster/Ramp'
  */
 #endif                                 /* RTW_HEADER_ctrl_sixaxis2thruster_h_ */
 
@@ -1261,6 +1296,8 @@ int tid = 0;
 
 P_ctrl_sixaxis2thruster_T rtParameter[NUMST+!TID01EQ];
 P_ctrl_sixaxis2thruster_T *param_lookup[NUMST][2] = {
+  { &rtParameter[0], &rtParameter[1] },
+
   { &rtParameter[0], &rtParameter[1] },
 };
 

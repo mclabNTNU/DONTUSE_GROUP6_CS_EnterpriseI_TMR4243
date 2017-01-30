@@ -1,11 +1,15 @@
 /*
  * ctrl_sixaxis2force.c
  *
+ * Academic License - for use in teaching, academic research, and meeting
+ * course requirements at degree granting institutions only.  Not for
+ * government, commercial, or other organizational use.
+ *
  * Code generation for model "ctrl_sixaxis2force".
  *
- * Model version              : 1.26
- * Simulink Coder version : 8.6 (R2014a) 27-Dec-2013
- * C source code generated on : Sun Mar 08 15:44:17 2015
+ * Model version              : 1.53
+ * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
+ * C source code generated on : Mon Jan 30 18:05:39 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -13,6 +17,7 @@
  * Code generation objectives: Unspecified
  * Validation result: Not run
  */
+
 #include "ctrl_sixaxis2force.h"
 #include "ctrl_sixaxis2force_private.h"
 
@@ -26,95 +31,72 @@ DW_ctrl_sixaxis2force_T ctrl_sixaxis2force_DW;
 RT_MODEL_ctrl_sixaxis2force_T ctrl_sixaxis2force_M_;
 RT_MODEL_ctrl_sixaxis2force_T *const ctrl_sixaxis2force_M =
   &ctrl_sixaxis2force_M_;
-real_T rt_atan2d_snf(real_T u0, real_T u1)
-{
-  real_T y;
-  int32_T u0_0;
-  int32_T u1_0;
-  if (rtIsNaN(u0) || rtIsNaN(u1)) {
-    y = (rtNaN);
-  } else if (rtIsInf(u0) && rtIsInf(u1)) {
-    if (u0 > 0.0) {
-      u0_0 = 1;
-    } else {
-      u0_0 = -1;
-    }
-
-    if (u1 > 0.0) {
-      u1_0 = 1;
-    } else {
-      u1_0 = -1;
-    }
-
-    y = atan2(u0_0, u1_0);
-  } else if (u1 == 0.0) {
-    if (u0 > 0.0) {
-      y = RT_PI / 2.0;
-    } else if (u0 < 0.0) {
-      y = -(RT_PI / 2.0);
-    } else {
-      y = 0.0;
-    }
-  } else {
-    y = atan2(u0, u1);
-  }
-
-  return y;
-}
 
 /* Model output function */
 static void ctrl_sixaxis2force_output(void)
 {
-  real_T z;
-  real_T tau_idx_0;
-  real_T u_idx_1;
-  real_T u_idx_2;
+  /* local block i/o variables */
+  real_T rtb_Output;
+  real_T f_vspy;
 
-  /* MATLAB Function: '<Root>/Thrust allocation' incorporates:
-   *  Constant: '<Root>/True'
-   *  Gain: '<Root>/Gain'
-   *  Gain: '<Root>/Gain1'
+  /* MATLAB Function: '<Root>/MATLAB Function' incorporates:
    *  Sum: '<Root>/Sum'
    */
-  /* MATLAB Function 'Thrust allocation': '<S1>:1' */
-  /*  Forces and moments vector */
-  /* '<S1>:1:4' */
-  tau_idx_0 = ctrl_sixaxis2force_P.Gain1_Gain * ctrl_sixaxis2force_B.PosYLeft;
+  /* MATLAB Function 'MATLAB Function': '<S1>:1' */
+  /* '<S1>:1:5' */
+  /* tau_yaw = f_vspy*l_vsp+f_b*l_bt */
+  /* tau_y=f_vspy+f_bt */
+  /* solve for f_bt and f_vspy */
+  /* '<S1>:1:11' */
+  f_vspy = ((ctrl_sixaxis2force_B.L2_continuous -
+             ctrl_sixaxis2force_B.R2_continuous) - ctrl_sixaxis2force_B.PosYLeft
+            * 0.3875) / -0.845;
 
-  /*  Extended thrust configuration matrix */
-  /*  Extended thrust coefficient matrix */
-  /*  tau = T*K*u inverse */
-  /* '<S1>:1:23' */
-  u_idx_1 = ctrl_sixaxis2force_B.PosXLeft - tau_idx_0 * 0.0;
-  u_idx_2 = (((ctrl_sixaxis2force_B.L2_continuous -
-               ctrl_sixaxis2force_B.R2_continuous) *
-              ctrl_sixaxis2force_P.Gain_Gain - tau_idx_0 * 0.0) - u_idx_1 *
-             -0.4575) / 2.221505;
-  u_idx_1 -= u_idx_2 * 2.629;
-  z = u_idx_1 / 1.165;
-  u_idx_1 /= 1.165;
-  tau_idx_0 = (tau_idx_0 - u_idx_2 * 0.0) - u_idx_1 * 0.0;
+  /* MATLAB Function: '<Root>/MATLAB Function1' incorporates:
+   *  MATLAB Function: '<Root>/MATLAB Function'
+   */
+  /* '<S1>:1:12' */
+  /* MATLAB Function 'MATLAB Function1': '<S2>:1' */
+  /* '<S2>:1:3' */
+  /* '<S2>:1:4' */
+  ctrl_sixaxis2force_B.U_bp = ctrl_sixaxis2force_B.PosYLeft - f_vspy;
 
-  /* '<S1>:1:25' */
-  /* '<S1>:1:27' */
-  u_idx_1 = tau_idx_0 / 1.165;
+  /* '<S2>:1:5' */
+  ctrl_sixaxis2force_B.U_vsp = sqrt(ctrl_sixaxis2force_B.PosXLeft *
+    ctrl_sixaxis2force_B.PosXLeft + f_vspy * f_vspy);
+  ctrl_sixaxis2force_B.alpha = atan(f_vspy / ctrl_sixaxis2force_B.PosXLeft);
 
-  /* '<S1>:1:28' */
-  /* '<S1>:1:29' */
-  /* '<S1>:1:30' */
-  if (ctrl_sixaxis2force_P.True_Value != 0.0) {
-    /* '<S1>:1:33' */
-    ctrl_sixaxis2force_B.omega_VSP = 0.3;
+  /* Clock: '<S3>/Clock' */
+  rtb_Output = ctrl_sixaxis2force_M->Timing.t[0];
+
+  /* Step: '<S3>/Step' */
+  if (ctrl_sixaxis2force_M->Timing.t[0] < ctrl_sixaxis2force_P.Ramp_start) {
+    f_vspy = ctrl_sixaxis2force_P.Step_Y0;
   } else {
-    /* '<S1>:1:35' */
-    ctrl_sixaxis2force_B.omega_VSP = 0.0;
+    f_vspy = ctrl_sixaxis2force_P.Ramp_slope;
   }
 
-  ctrl_sixaxis2force_B.u_BT = u_idx_2;
-  ctrl_sixaxis2force_B.u_VSP = sqrt(u_idx_1 * u_idx_1 + z * z);
-  ctrl_sixaxis2force_B.alpha_VSP = rt_atan2d_snf(z, tau_idx_0 / 1.165);
+  /* End of Step: '<S3>/Step' */
 
-  /* End of MATLAB Function: '<Root>/Thrust allocation' */
+  /* Sum: '<S3>/Output' incorporates:
+   *  Constant: '<S3>/Constant'
+   *  Constant: '<S3>/Constant1'
+   *  Product: '<S3>/Product'
+   *  Sum: '<S3>/Sum'
+   */
+  rtb_Output = (rtb_Output - ctrl_sixaxis2force_P.Ramp_start) * f_vspy +
+    ctrl_sixaxis2force_P.Ramp_X0;
+
+  /* Saturate: '<Root>/Saturation' */
+  if (rtb_Output > ctrl_sixaxis2force_P.Saturation_UpperSat) {
+    ctrl_sixaxis2force_B.Saturation = ctrl_sixaxis2force_P.Saturation_UpperSat;
+  } else if (rtb_Output < ctrl_sixaxis2force_P.Saturation_LowerSat) {
+    ctrl_sixaxis2force_B.Saturation = ctrl_sixaxis2force_P.Saturation_LowerSat;
+  } else {
+    ctrl_sixaxis2force_B.Saturation = rtb_Output;
+  }
+
+  /* End of Saturate: '<Root>/Saturation' */
 }
 
 /* Model update function */
@@ -137,15 +119,35 @@ static void ctrl_sixaxis2force_update(void)
     ctrl_sixaxis2force_M->Timing.stepSize0 +
     ctrl_sixaxis2force_M->Timing.clockTickH0 *
     ctrl_sixaxis2force_M->Timing.stepSize0 * 4294967296.0;
+
+  {
+    /* Update absolute timer for sample time: [0.2s, 0.0s] */
+    /* The "clockTick1" counts the number of times the code of this task has
+     * been executed. The absolute time is the multiplication of "clockTick1"
+     * and "Timing.stepSize1". Size of "clockTick1" ensures timer will not
+     * overflow during the application lifespan selected.
+     * Timer of this task consists of two 32 bit unsigned integers.
+     * The two integers represent the low bits Timing.clockTick1 and the high bits
+     * Timing.clockTickH1. When the low bit overflows to 0, the high bits increment.
+     */
+    if (!(++ctrl_sixaxis2force_M->Timing.clockTick1)) {
+      ++ctrl_sixaxis2force_M->Timing.clockTickH1;
+    }
+
+    ctrl_sixaxis2force_M->Timing.t[1] = ctrl_sixaxis2force_M->Timing.clockTick1 *
+      ctrl_sixaxis2force_M->Timing.stepSize1 +
+      ctrl_sixaxis2force_M->Timing.clockTickH1 *
+      ctrl_sixaxis2force_M->Timing.stepSize1 * 4294967296.0;
+  }
 }
 
 /* Model initialize function */
-void ctrl_sixaxis2force_initialize(void)
+static void ctrl_sixaxis2force_initialize(void)
 {
 }
 
 /* Model terminate function */
-void ctrl_sixaxis2force_terminate(void)
+static void ctrl_sixaxis2force_terminate(void)
 {
   /* (no terminate code required) */
 }
@@ -199,10 +201,27 @@ RT_MODEL_ctrl_sixaxis2force_T *ctrl_sixaxis2force(void)
   (void) memset((void *)ctrl_sixaxis2force_M, 0,
                 sizeof(RT_MODEL_ctrl_sixaxis2force_T));
 
+  {
+    /* Setup solver object */
+    rtsiSetSimTimeStepPtr(&ctrl_sixaxis2force_M->solverInfo,
+                          &ctrl_sixaxis2force_M->Timing.simTimeStep);
+    rtsiSetTPtr(&ctrl_sixaxis2force_M->solverInfo, &rtmGetTPtr
+                (ctrl_sixaxis2force_M));
+    rtsiSetStepSizePtr(&ctrl_sixaxis2force_M->solverInfo,
+                       &ctrl_sixaxis2force_M->Timing.stepSize0);
+    rtsiSetErrorStatusPtr(&ctrl_sixaxis2force_M->solverInfo, (&rtmGetErrorStatus
+      (ctrl_sixaxis2force_M)));
+    rtsiSetRTModelPtr(&ctrl_sixaxis2force_M->solverInfo, ctrl_sixaxis2force_M);
+  }
+
+  rtsiSetSimTimeStep(&ctrl_sixaxis2force_M->solverInfo, MAJOR_TIME_STEP);
+  rtsiSetSolverName(&ctrl_sixaxis2force_M->solverInfo,"FixedStepDiscrete");
+
   /* Initialize timing info */
   {
     int_T *mdlTsMap = ctrl_sixaxis2force_M->Timing.sampleTimeTaskIDArray;
     mdlTsMap[0] = 0;
+    mdlTsMap[1] = 1;
     ctrl_sixaxis2force_M->Timing.sampleTimeTaskIDPtr = (&mdlTsMap[0]);
     ctrl_sixaxis2force_M->Timing.sampleTimes =
       (&ctrl_sixaxis2force_M->Timing.sampleTimesArray[0]);
@@ -210,10 +229,12 @@ RT_MODEL_ctrl_sixaxis2force_T *ctrl_sixaxis2force(void)
       (&ctrl_sixaxis2force_M->Timing.offsetTimesArray[0]);
 
     /* task periods */
-    ctrl_sixaxis2force_M->Timing.sampleTimes[0] = (0.01);
+    ctrl_sixaxis2force_M->Timing.sampleTimes[0] = (0.0);
+    ctrl_sixaxis2force_M->Timing.sampleTimes[1] = (0.2);
 
     /* task offsets */
     ctrl_sixaxis2force_M->Timing.offsetTimes[0] = (0.0);
+    ctrl_sixaxis2force_M->Timing.offsetTimes[1] = (0.0);
   }
 
   rtmSetTPtr(ctrl_sixaxis2force_M, &ctrl_sixaxis2force_M->Timing.tArray[0]);
@@ -221,11 +242,13 @@ RT_MODEL_ctrl_sixaxis2force_T *ctrl_sixaxis2force(void)
   {
     int_T *mdlSampleHits = ctrl_sixaxis2force_M->Timing.sampleHitArray;
     mdlSampleHits[0] = 1;
+    mdlSampleHits[1] = 1;
     ctrl_sixaxis2force_M->Timing.sampleHits = (&mdlSampleHits[0]);
   }
 
   rtmSetTFinal(ctrl_sixaxis2force_M, -1);
-  ctrl_sixaxis2force_M->Timing.stepSize0 = 0.01;
+  ctrl_sixaxis2force_M->Timing.stepSize0 = 0.2;
+  ctrl_sixaxis2force_M->Timing.stepSize1 = 0.2;
 
   /* Setup for data logging */
   {
@@ -250,8 +273,8 @@ RT_MODEL_ctrl_sixaxis2force_T *ctrl_sixaxis2force(void)
   }
 
   ctrl_sixaxis2force_M->solverInfoPtr = (&ctrl_sixaxis2force_M->solverInfo);
-  ctrl_sixaxis2force_M->Timing.stepSize = (0.01);
-  rtsiSetFixedStepSize(&ctrl_sixaxis2force_M->solverInfo, 0.01);
+  ctrl_sixaxis2force_M->Timing.stepSize = (0.2);
+  rtsiSetFixedStepSize(&ctrl_sixaxis2force_M->solverInfo, 0.2);
   rtsiSetSolverMode(&ctrl_sixaxis2force_M->solverInfo, SOLVER_MODE_SINGLETASKING);
 
   /* block I/O */
@@ -273,10 +296,10 @@ RT_MODEL_ctrl_sixaxis2force_T *ctrl_sixaxis2force(void)
   ctrl_sixaxis2force_M->Sizes.numY = (0);/* Number of model outputs */
   ctrl_sixaxis2force_M->Sizes.numU = (0);/* Number of model inputs */
   ctrl_sixaxis2force_M->Sizes.sysDirFeedThru = (0);/* The model is not direct feedthrough */
-  ctrl_sixaxis2force_M->Sizes.numSampTimes = (1);/* Number of sample times */
-  ctrl_sixaxis2force_M->Sizes.numBlocks = (18);/* Number of blocks */
+  ctrl_sixaxis2force_M->Sizes.numSampTimes = (2);/* Number of sample times */
+  ctrl_sixaxis2force_M->Sizes.numBlocks = (25);/* Number of blocks */
   ctrl_sixaxis2force_M->Sizes.numBlockIO = (8);/* Number of block outputs */
-  ctrl_sixaxis2force_M->Sizes.numBlockPrms = (70);/* Sum of parameter "widths" */
+  ctrl_sixaxis2force_M->Sizes.numBlockPrms = (73);/* Sum of parameter "widths" */
   return ctrl_sixaxis2force_M;
 }
 
@@ -407,7 +430,7 @@ long NIRT_SetValueByDataType(void* ptr,int subindex, double value, int type, int
     return NIRT_SetValueByDataType(ptr,subindex,value,6,Complex);
 
    case 13:
-    //Type is array. Call SetValueByDataType on its contained type
+    //Type is matrix. Call SetValueByDataType on its contained type
     return NIRT_SetValueByDataType(ptr,subindex,value,7,Complex);
 
    case 15:
@@ -446,7 +469,7 @@ void SetExternalInputs(double* data, int* TaskSampleHit)
   int index = 0, count = 0;
 
   // PosXLeft
-  if (TaskSampleHit[0]) {
+  if (TaskSampleHit[1]) {
     NIRT_SetValueByDataType(&ctrl_sixaxis2force_B.PosXLeft, 0, data[index++], 0,
       0);
   } else {
@@ -454,7 +477,7 @@ void SetExternalInputs(double* data, int* TaskSampleHit)
   }
 
   // PosYLeft
-  if (TaskSampleHit[0]) {
+  if (TaskSampleHit[1]) {
     NIRT_SetValueByDataType(&ctrl_sixaxis2force_B.PosYLeft, 0, data[index++], 0,
       0);
   } else {
@@ -462,7 +485,7 @@ void SetExternalInputs(double* data, int* TaskSampleHit)
   }
 
   // L2_continuous
-  if (TaskSampleHit[0]) {
+  if (TaskSampleHit[1]) {
     NIRT_SetValueByDataType(&ctrl_sixaxis2force_B.L2_continuous, 0, data[index++],
       0, 0);
   } else {
@@ -470,7 +493,7 @@ void SetExternalInputs(double* data, int* TaskSampleHit)
   }
 
   // R2_continuous
-  if (TaskSampleHit[0]) {
+  if (TaskSampleHit[1]) {
     NIRT_SetValueByDataType(&ctrl_sixaxis2force_B.R2_continuous, 0, data[index++],
       0, 0);
   } else {
@@ -489,57 +512,57 @@ void SetExternalOutputs(double* data, int* TaskSampleHit)
   int index = 0, count = 0;
 
   // u_BT: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.u_BT,0,0,
+  if (TaskSampleHit[1]) {              // sample and hold
+    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.U_bp,0,0,
       0);
   } else {
     index += 1;
   }
 
   // u_VSP1: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.u_VSP,0,0,
+  if (TaskSampleHit[1]) {              // sample and hold
+    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.U_vsp,0,0,
       0);
   } else {
     index += 1;
   }
 
   // u_VSP2: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.u_VSP,0,0,
+  if (TaskSampleHit[1]) {              // sample and hold
+    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.U_vsp,0,0,
       0);
   } else {
     index += 1;
   }
 
   // alpha_VSP1: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha_VSP,
-      0,0,0);
+  if (TaskSampleHit[1]) {              // sample and hold
+    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha,0,0,
+      0);
   } else {
     index += 1;
   }
 
   // alpha_VSP2: Virtual Signal # 0
-  if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha_VSP,
-      0,0,0);
+  if (TaskSampleHit[1]) {              // sample and hold
+    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha,0,0,
+      0);
   } else {
     index += 1;
   }
 
   // omega_VSP1: Virtual Signal # 0
   if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.omega_VSP,
-      0,0,0);
+    ni_extout[index++] = NIRT_GetValueByDataType
+      (&ctrl_sixaxis2force_B.Saturation,0,0,0);
   } else {
     index += 1;
   }
 
   // omega_VSP2: Virtual Signal # 0
   if (TaskSampleHit[0]) {              // sample and hold
-    ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.omega_VSP,
-      0,0,0);
+    ni_extout[index++] = NIRT_GetValueByDataType
+      (&ctrl_sixaxis2force_B.Saturation,0,0,0);
   } else {
     index += 1;
   }
@@ -558,51 +581,65 @@ int NI_InitExternalOutputs()
   int index = 0, count = 0;
 
   // u_BT: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.u_BT,0,0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.U_bp,0,0,0);
 
   // u_VSP1: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.u_VSP,0,0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.U_vsp,0,0,0);
 
   // u_VSP2: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.u_VSP,0,0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.U_vsp,0,0,0);
 
   // alpha_VSP1: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha_VSP,0,
-    0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha,0,0,0);
 
   // alpha_VSP2: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha_VSP,0,
-    0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.alpha,0,0,0);
 
   // omega_VSP1: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.omega_VSP,0,
-    0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.Saturation,
+    0,0,0);
 
   // omega_VSP2: Virtual Signal # 0
-  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.omega_VSP,0,
-    0,0);
+  ni_extout[index++] = NIRT_GetValueByDataType(&ctrl_sixaxis2force_B.Saturation,
+    0,0,0);
   return NI_OK;
 }
 
 // by default, all elements (inclulding	scalars) have 2 dimensions [1,1]
 static NI_Parameter NI_ParamList[] DataSection(".NIVS.paramlist") =
 {
-  { 0, "ctrl_sixaxis2force/Gain1/Gain", offsetof(P_ctrl_sixaxis2force_T,
-    Gain1_Gain), 22, 1, 2, 0, 0 },
+  { 0, "ctrl_sixaxis2force/Ramp/Constant1/Value", offsetof
+    (P_ctrl_sixaxis2force_T, Ramp_X0), 22, 1, 2, 0, 0 },
 
-  { 1, "ctrl_sixaxis2force/Gain/Gain", offsetof(P_ctrl_sixaxis2force_T,
-    Gain_Gain), 22, 1, 2, 2, 0 },
+  { 1, "ctrl_sixaxis2force/Ramp/Step/After", offsetof(P_ctrl_sixaxis2force_T,
+    Ramp_slope), 22, 1, 2, 2, 0 },
 
-  { 2, "ctrl_sixaxis2force/True/Value", offsetof(P_ctrl_sixaxis2force_T,
-    True_Value), 22, 1, 2, 4, 0 },
+  { 2, "ctrl_sixaxis2force/Ramp/Constant/Value", offsetof(P_ctrl_sixaxis2force_T,
+    Ramp_start), 22, 1, 2, 4, 0 },
+
+  { 3, "ctrl_sixaxis2force/Ramp/Step/Time", offsetof(P_ctrl_sixaxis2force_T,
+    Ramp_start), 22, 1, 2, 6, 0 },
+
+  { 4, "ctrl_sixaxis2force/Ramp/Step/Before", offsetof(P_ctrl_sixaxis2force_T,
+    Step_Y0), 22, 1, 2, 8, 0 },
+
+  { 5, "ctrl_sixaxis2force/Saturation/UpperLimit", offsetof
+    (P_ctrl_sixaxis2force_T, Saturation_UpperSat), 22, 1, 2, 10, 0 },
+
+  { 6, "ctrl_sixaxis2force/Saturation/LowerLimit", offsetof
+    (P_ctrl_sixaxis2force_T, Saturation_LowerSat), 22, 1, 2, 12, 0 },
 };
 
-static int NI_ParamListSize DataSection(".NIVS.paramlistsize") = 3;
+static int NI_ParamListSize DataSection(".NIVS.paramlistsize") = 7;
 static int NI_ParamDimList[] DataSection(".NIVS.paramdimlist") =
 {
   1, 1,                                /* Parameter at index 0 */
   1, 1,                                /* Parameter at index 1 */
   1, 1,                                /* Parameter at index 2 */
+  1, 1,                                /* Parameter at index 3 */
+  1, 1,                                /* Parameter at index 4 */
+  1, 1,                                /* Parameter at index 5 */
+  1, 1,                                /* Parameter at index 6 */
 };
 
 static NI_Signal NI_SigList[] DataSection(".NIVS.siglist") =
@@ -621,21 +658,20 @@ static NI_Signal NI_SigList[] DataSection(".NIVS.siglist") =
     (B_ctrl_sixaxis2force_T, R2_continuous)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1,
     2, 6, 0 },
 
-  { 4, "ctrl_sixaxis2force/Thrust allocation", 0, "u_BT", offsetof
-    (B_ctrl_sixaxis2force_T, u_BT)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 8, 0
-  },
+  { 4, "ctrl_sixaxis2force/Saturation", 0, "", offsetof(B_ctrl_sixaxis2force_T,
+    Saturation)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 8, 0 },
 
-  { 5, "ctrl_sixaxis2force/Thrust allocation", 1, "u_VSP", offsetof
-    (B_ctrl_sixaxis2force_T, u_VSP)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 10,
+  { 5, "ctrl_sixaxis2force/MATLAB Function1", 0, "U_vsp", offsetof
+    (B_ctrl_sixaxis2force_T, U_vsp)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 10,
     0 },
 
-  { 6, "ctrl_sixaxis2force/Thrust allocation", 2, "alpha_VSP", offsetof
-    (B_ctrl_sixaxis2force_T, alpha_VSP)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2,
-    12, 0 },
+  { 6, "ctrl_sixaxis2force/MATLAB Function1", 1, "alpha", offsetof
+    (B_ctrl_sixaxis2force_T, alpha)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 12,
+    0 },
 
-  { 7, "ctrl_sixaxis2force/Thrust allocation", 3, "omega_VSP", offsetof
-    (B_ctrl_sixaxis2force_T, omega_VSP)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2,
-    14, 0 },
+  { 7, "ctrl_sixaxis2force/MATLAB Function1", 2, "U_bp", offsetof
+    (B_ctrl_sixaxis2force_T, U_bp)+0*sizeof(real_T), BLOCKIO_SIG, 0, 1, 2, 14, 0
+  },
 
   { -1, "", -1, "", 0, 0, 0 }
 };
@@ -651,23 +687,23 @@ static int NI_SigDimList[] DataSection(".NIVS.sigdimlist") =
 static long NI_ExtListSize DataSection(".NIVS.extlistsize") = 11;
 static NI_ExternalIO NI_ExtList[] DataSection(".NIVS.extlist") =
 {
-  { 0, "PosXLeft", 0, EXT_IN, 1, 1, 1 },
+  { 0, "PosXLeft", 1, EXT_IN, 1, 1, 1 },
 
-  { 1, "PosYLeft", 0, EXT_IN, 1, 1, 1 },
+  { 1, "PosYLeft", 1, EXT_IN, 1, 1, 1 },
 
-  { 2, "L2_continuous", 0, EXT_IN, 1, 1, 1 },
+  { 2, "L2_continuous", 1, EXT_IN, 1, 1, 1 },
 
-  { 3, "R2_continuous", 0, EXT_IN, 1, 1, 1 },
+  { 3, "R2_continuous", 1, EXT_IN, 1, 1, 1 },
 
-  { 0, "u_BT", 0, EXT_OUT, 1, 1, 1 },
+  { 0, "u_BT", 1, EXT_OUT, 1, 1, 1 },
 
-  { 1, "u_VSP1", 0, EXT_OUT, 1, 1, 1 },
+  { 1, "u_VSP1", 1, EXT_OUT, 1, 1, 1 },
 
-  { 2, "u_VSP2", 0, EXT_OUT, 1, 1, 1 },
+  { 2, "u_VSP2", 1, EXT_OUT, 1, 1, 1 },
 
-  { 3, "alpha_VSP1", 0, EXT_OUT, 1, 1, 1 },
+  { 3, "alpha_VSP1", 1, EXT_OUT, 1, 1, 1 },
 
-  { 4, "alpha_VSP2", 0, EXT_OUT, 1, 1, 1 },
+  { 4, "alpha_VSP2", 1, EXT_OUT, 1, 1, 1 },
 
   { 5, "omega_VSP1", 0, EXT_OUT, 1, 1, 1 },
 
@@ -683,14 +719,14 @@ static NI_ExternalIO NI_ExtList[] DataSection(".NIVS.extlist") =
  */
 NI_Task NI_TaskList[] DataSection(".NIVS.tasklist") =
 {
-  { 0, 0.01, 0 }
+  { 0, 0.2, 0 }
 };
 
 int NI_NumTasks DataSection(".NIVS.numtasks") = 1;
 static char* NI_CompiledModelName DataSection(".NIVS.compiledmodelname") =
   "ctrl_sixaxis2force";
-static char* NI_CompiledModelVersion = "1.26";
-static char* NI_CompiledModelDateTime = "Sun Mar 08 15:44:17 2015";
+static char* NI_CompiledModelVersion = "1.53";
+static char* NI_CompiledModelDateTime = "Mon Jan 30 18:05:39 2017";
 static char* NI_builder DataSection(".NIVS.builder") =
   "NI VeriStand 2014.0.0.82 (2014) RTW Build";
 static char* NI_BuilderVersion DataSection(".NIVS.builderversion") =
@@ -1507,6 +1543,7 @@ DLL_EXPORT long NIRT_SetSimState(double* contStates, double* discStates, long
 
   if (clockTicks) {
     S->Timing.clockTick0 = clockTicks[0];
+    S->Timing.clockTick1 = clockTicks[0];
   }
 
   return NI_OK;
