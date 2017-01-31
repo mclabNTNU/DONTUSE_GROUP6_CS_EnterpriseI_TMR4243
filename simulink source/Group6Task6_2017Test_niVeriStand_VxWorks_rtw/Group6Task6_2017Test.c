@@ -7,9 +7,9 @@
  *
  * Code generation for model "Group6Task6_2017Test".
  *
- * Model version              : 1.122
+ * Model version              : 1.126
  * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
- * C source code generated on : Mon Jan 30 21:48:55 2017
+ * C source code generated on : Tue Jan 31 11:49:33 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -92,12 +92,12 @@ static void Group6Task6_2017Test_output(void)
 {
   /* local block i/o variables */
   real_T rtb_Output;
-  real_T rtb_U_vsp;
-  real_T rtb_U_bp;
-  real_T current_condition;
+  real_T rtb_u_vsp;
+  real_T rtb_u_bt;
   real_T rtb_tau_x;
   real_T rtb_tau_y;
   real_T rtb_tau_yaw;
+  real_T rtb_f_vspy;
 
   /* Memory: '<Root>/Memory1' */
   Group6Task6_2017Test_B.Memory1 = Group6Task6_2017Test_DW.Memory1_PreviousInput;
@@ -109,17 +109,17 @@ static void Group6Task6_2017Test_output(void)
     if (Group6Task6_2017Test_B.Memory1 == 2.0) {
       /* '<S5>:1:4' */
       /* '<S5>:1:5' */
-      current_condition = 3.0;
+      rtb_f_vspy = 3.0;
     } else {
       /* '<S5>:1:7' */
-      current_condition = 2.0;
+      rtb_f_vspy = 2.0;
     }
   } else {
     /* '<S5>:1:10' */
-    current_condition = Group6Task6_2017Test_B.Memory1;
+    rtb_f_vspy = Group6Task6_2017Test_B.Memory1;
   }
 
-  if (current_condition == 2.0) {
+  if (rtb_f_vspy == 2.0) {
     /* '<S5>:1:13' */
     /* '<S5>:1:15' */
     rtb_tau_x = -Group6Task6_2017Test_B.PosYLeft;
@@ -134,48 +134,53 @@ static void Group6Task6_2017Test_output(void)
     rtb_tau_x = -Group6Task6_2017Test_B.PosYLeft;
 
     /* '<S5>:1:20' */
-    rtb_tau_yaw = Group6Task6_2017Test_B.R2_continuous;
+    rtb_tau_y = Group6Task6_2017Test_B.PosXLeft;
 
     /* '<S5>:1:21' */
-    rtb_tau_y = Group6Task6_2017Test_B.PosXLeft;
+    rtb_tau_yaw = Group6Task6_2017Test_B.R2_continuous;
   }
 
-  Group6Task6_2017Test_B.current_condition = current_condition;
+  Group6Task6_2017Test_B.current_condition = rtb_f_vspy;
 
   /* End of MATLAB Function: '<Root>/MATLAB Function4' */
 
   /* MATLAB Function: '<Root>/MATLAB Function' */
   /* MATLAB Function 'MATLAB Function': '<S1>:1' */
-  /* '<S1>:1:5' */
-  /* tau_yaw = f_vspy*l_vsp+f_bt*l_bt */
-  /* tau_y=f_vspy+f_bt */
-  /* solve for f_bt and f_vspy */
-  /* '<S1>:1:11' */
-  current_condition = (rtb_tau_yaw - rtb_tau_y * 0.3875) / -0.845;
+  /* new equations from Silas 31/1/2017, based on Matlab inversion of B matrix */
+  /* '<S1>:1:6' */
+  /* '<S1>:1:7' */
+  rtb_f_vspy = 0.3875 * rtb_tau_y / 0.845 - rtb_tau_yaw / 0.845;
 
   /* MATLAB Function: '<Root>/MATLAB Function1' incorporates:
    *  Constant: '<Root>/Constant'
    *  MATLAB Function: '<Root>/MATLAB Function'
    */
-  /* '<S1>:1:12' */
+  /* '<S1>:1:8' */
+  /* original equations from 30/1/2017 */
+  /*  f_vspx=tau_x; */
+  /*  f_vspy=(tau_yaw-tau_y*l_bt)/(l_vsp-l_bt); */
+  /*  f_bt=tau_y-f_vspy; */
+  /* tau_yaw = f_vspy*l_vsp+f_bt*l_bt */
+  /* tau_y=f_vspy+f_bt */
+  /* solve for f_bt and f_vspy */
   /* MATLAB Function 'MATLAB Function1': '<S2>:1' */
   /* '<S2>:1:3' */
-  rtb_U_vsp = sqrt(rtb_tau_x * rtb_tau_x + current_condition * current_condition)
-    / Group6Task6_2017Test_P.Constant_Value[0];
+  rtb_u_vsp = sqrt(rtb_tau_x * rtb_tau_x + rtb_f_vspy * rtb_f_vspy) /
+    Group6Task6_2017Test_P.Constant_Value[0];
 
   /* '<S2>:1:4' */
-  rtb_U_bp = (rtb_tau_y - current_condition) /
+  rtb_u_bt = (rtb_tau_yaw / 0.845 - -0.4575 * rtb_tau_y / 0.845) /
     Group6Task6_2017Test_P.Constant_Value[1];
 
   /* '<S2>:1:5' */
-  Group6Task6_2017Test_B.alpha = rt_atan2d_snf(current_condition, rtb_tau_x);
+  Group6Task6_2017Test_B.alpha = rt_atan2d_snf(rtb_f_vspy, rtb_tau_x);
 
   /* MATLAB Function: '<Root>/MATLAB Function3' */
-  Group6Task6_201_MATLABFunction2(rtb_U_bp,
+  Group6Task6_201_MATLABFunction2(rtb_u_bt,
     &Group6Task6_2017Test_B.sf_MATLABFunction3);
 
   /* MATLAB Function: '<Root>/MATLAB Function2' */
-  Group6Task6_201_MATLABFunction2(rtb_U_vsp,
+  Group6Task6_201_MATLABFunction2(rtb_u_vsp,
     &Group6Task6_2017Test_B.sf_MATLABFunction2);
 
   /* Clock: '<S6>/Clock' */
@@ -183,9 +188,9 @@ static void Group6Task6_2017Test_output(void)
 
   /* Step: '<S6>/Step' */
   if (Group6Task6_2017Test_M->Timing.t[0] < Group6Task6_2017Test_P.Ramp_start) {
-    current_condition = Group6Task6_2017Test_P.Step_Y0;
+    rtb_f_vspy = Group6Task6_2017Test_P.Step_Y0;
   } else {
-    current_condition = Group6Task6_2017Test_P.Ramp_slope;
+    rtb_f_vspy = Group6Task6_2017Test_P.Ramp_slope;
   }
 
   /* End of Step: '<S6>/Step' */
@@ -196,8 +201,8 @@ static void Group6Task6_2017Test_output(void)
    *  Product: '<S6>/Product'
    *  Sum: '<S6>/Sum'
    */
-  rtb_Output = (rtb_Output - Group6Task6_2017Test_P.Ramp_start) *
-    current_condition + Group6Task6_2017Test_P.Ramp_X0;
+  rtb_Output = (rtb_Output - Group6Task6_2017Test_P.Ramp_start) * rtb_f_vspy +
+    Group6Task6_2017Test_P.Ramp_X0;
 
   /* Saturate: '<Root>/Saturation' */
   if (rtb_Output > Group6Task6_2017Test_P.Saturation_UpperSat) {
@@ -951,8 +956,8 @@ NI_Task NI_TaskList[] DataSection(".NIVS.tasklist") =
 int NI_NumTasks DataSection(".NIVS.numtasks") = 1;
 static char* NI_CompiledModelName DataSection(".NIVS.compiledmodelname") =
   "group6task6_2017test";
-static char* NI_CompiledModelVersion = "1.122";
-static char* NI_CompiledModelDateTime = "Mon Jan 30 21:48:55 2017";
+static char* NI_CompiledModelVersion = "1.126";
+static char* NI_CompiledModelDateTime = "Tue Jan 31 11:49:33 2017";
 static char* NI_builder DataSection(".NIVS.builder") =
   "NI VeriStand 2014.0.0.82 (2014) RTW Build";
 static char* NI_BuilderVersion DataSection(".NIVS.builderversion") =
