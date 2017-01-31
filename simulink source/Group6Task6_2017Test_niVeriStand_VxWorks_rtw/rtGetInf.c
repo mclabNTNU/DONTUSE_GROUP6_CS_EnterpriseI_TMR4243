@@ -7,9 +7,9 @@
  *
  * Code generation for model "Group6Task6_2017Test".
  *
- * Model version              : 1.126
+ * Model version              : 1.123
  * Simulink Coder version : 8.8 (R2015a) 09-Feb-2015
- * C source code generated on : Tue Jan 31 11:49:33 2017
+ * C source code generated on : Tue Jan 31 12:34:25 2017
  *
  * Target selection: NIVeriStand_VxWorks.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
